@@ -1,0 +1,26 @@
+<?php
+
+namespace {{ namespace }}\Application\Controller;
+
+{% block use_statements %}
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+{% endblock use_statements %}
+
+{% block class_definition %}
+class DefaultController extends Controller
+{% endblock class_definition %}
+{
+{% block class_body %}
+
+    /**
+     * @Route("/hello/{name}")
+     * @Template()
+     */
+    public function indexAction($name)
+    {
+        return array('name' => $name);
+    }
+{% endblock class_body %}
+}

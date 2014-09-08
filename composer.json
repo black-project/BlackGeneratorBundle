@@ -1,0 +1,29 @@
+{
+    "name": "black/generator-bundle",
+    "description": "This bundle generates code for you",
+    "keywords": [],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexandre Balmes",
+            "email": "alexandre@lablackroom.com"
+        }
+    ],
+    "require": {
+        "symfony/framework-bundle": "~2.2",
+        "symfony/console": "~2.0"
+    },
+    "require-dev": {
+        "twig/twig": "~1.11"
+    },
+    "autoload": {
+        "psr-4": { "Black\\Bundle\\GeneratorBundle": "" }
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.3.x-dev"
+        }
+    }
+}
