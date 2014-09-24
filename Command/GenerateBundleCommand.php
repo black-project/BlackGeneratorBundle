@@ -282,8 +282,7 @@ EOT
         try {
             $ret = $auto ? $routing->addResource($bundle) : false;
             if (!$ret) {
-
-                $help = sprintf("        <comment>resource: \"@%s/Application/Controller/\"</comment>\n        <comment>type:     annotation</comment>\n", $bundle);
+                $help = sprintf("        <comment>resource: \"@%s/Resources/config/routing.%s\"</comment>\n", $bundle, 'annotation');
                 $help .= "        <comment>prefix:   /</comment>\n";
 
                 return array(

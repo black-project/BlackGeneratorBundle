@@ -61,6 +61,9 @@ class BundleGenerator extends Generator
         $this->renderFile('bundle/index.html.twig.twig', $dir.'/Resources/views/Default/index.html.twig', $parameters);
 
         $this->renderFile('bundle/services.xml.twig', $dir.'/Resources/config/services.xml', $parameters);
+        $this->renderFile('bundle/orm.xml.twig', $dir.'/Resources/config/orm.xml', $parameters);
+        $this->renderFile('bundle/mongodb.xml.twig', $dir.'/Resources/config/mongodb.xml', $parameters);
+
 
         if ($structure) {
             $this->filesystem->mkdir($dir.'/Resources/doc');
