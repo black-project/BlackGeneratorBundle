@@ -38,7 +38,6 @@ class GenerateBundleCommand extends GeneratorCommand
                 new InputOption('namespace', '', InputOption::VALUE_REQUIRED, 'The namespace of the bundle to create'),
                 new InputOption('dir', '', InputOption::VALUE_REQUIRED, 'The directory where to create the bundle'),
                 new InputOption('bundle-name', '', InputOption::VALUE_REQUIRED, 'The optional bundle name'),
-                new InputOption('format', '', InputOption::VALUE_REQUIRED, 'Use the format for configuration files (php, xml, yml, or annotation)'),
                 new InputOption('structure', '', InputOption::VALUE_NONE, 'Whether to generate the whole directory structure'),
             ))
             ->setDescription('Generates a bundle')
@@ -96,10 +95,6 @@ EOT
         }
         $bundle = Validators::validateBundleName($bundle);
         $dir = Validators::validateTargetDir($input->getOption('dir'), $bundle, $namespace);
-        if (null === $input->getOption('format')) {
-            $input->setOption('format', 'annotation');
-        }
-        $format = Validators::validateFormat($input->getOption('format'));
         $structure = $input->getOption('structure');
 
         $dialog->writeSection($output, 'Bundle generation');
@@ -109,7 +104,7 @@ EOT
         }
 
         $generator = $this->getGenerator();
-        $generator->generate($namespace, $bundle, $dir, $format, $structure);
+        $generator->generate($namespace, $bundle, $dir, $structure);
 
         $output->writeln('Generating the bundle code: <info>OK</info>');
 
@@ -117,13 +112,13 @@ EOT
         $runner = $dialog->getRunner($output, $errors);
 
         // check that the namespace is already autoloaded
-        $runner($this->checkAutoloader($output, $namespace, $bundle, $dir));
+        $runner($this->checkAutoloader($output, $namespace, $bundle));
 
         // register the bundle in the Kernel class
         $runner($this->updateKernel($dialog, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle));
 
         // routing
-        $runner($this->updateRouting($dialog, $input, $output, $bundle, $format));
+        $runner($this->updateRouting($dialog, $input, $output, $bundle));
 
         $dialog->writeGeneratorSummary($output, $errors);
     }
@@ -160,7 +155,7 @@ EOT
                 '',
             ));
 
-            $namespace = $dialog->askAndValidate($output, $dialog->getQuestion('Bundle namespace', $input->getOption('namespace')), array('Black\Bundle\GeneratorBundle\Command\Validators', 'validateBundleNamespace'), false, $input->getOption('namespace'));
+            $namespace = $dialog->askAndValidate($output, $dialog->getQuestion('Bundle namespace', $input->getOption('namespace')), array('Sensio\Bundle\GeneratorBundle\Command\Validators', 'validateBundleNamespace'), false, $input->getOption('namespace'));
             $input->setOption('namespace', $namespace);
         }
 
@@ -183,7 +178,7 @@ EOT
                 'Based on the namespace, we suggest <comment>'.$bundle.'</comment>.',
                 '',
             ));
-            $bundle = $dialog->askAndValidate($output, $dialog->getQuestion('Bundle name', $bundle), array('Black\Bundle\GeneratorBundle\Command\Validators', 'validateBundleName'), false, $bundle);
+            $bundle = $dialog->askAndValidate($output, $dialog->getQuestion('Bundle name', $bundle), array('Sensio\Bundle\GeneratorBundle\Command\Validators', 'validateBundleName'), false, $bundle);
             $input->setOption('bundle-name', $bundle);
         }
 
@@ -208,24 +203,6 @@ EOT
             $input->setOption('dir', $dir);
         }
 
-        // format
-        $format = null;
-        try {
-            $format = $input->getOption('format') ? Validators::validateFormat($input->getOption('format')) : null;
-        } catch (\Exception $error) {
-            $output->writeln($dialog->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
-        }
-
-        if (null === $format) {
-            $output->writeln(array(
-                '',
-                'Determine the format to use for the generated configuration.',
-                '',
-            ));
-            $format = $dialog->askAndValidate($output, $dialog->getQuestion('Configuration format (yml, xml, php, or annotation)', $input->getOption('format')), array('Black\Bundle\GeneratorBundle\Command\Validators', 'validateFormat'), false, $input->getOption('format'));
-            $input->setOption('format', $format);
-        }
-
         // optional files to generate
         $output->writeln(array(
             '',
@@ -245,12 +222,12 @@ EOT
             '',
             $this->getHelper('formatter')->formatBlock('Summary before generation', 'bg=blue;fg=white', true),
             '',
-            sprintf("You are going to generate a \"<info>%s\\%s</info>\" bundle\nin \"<info>%s</info>\" using the \"<info>%s</info>\" format.", $namespace, $bundle, $dir, $format),
+            sprintf("You are going to generate a \"<info>%s\\%s</info>\" bundle\nin \"<info>%s</info>\".", $namespace, $bundle, $dir),
             '',
         ));
     }
 
-    protected function checkAutoloader(OutputInterface $output, $namespace, $bundle, $dir)
+    protected function checkAutoloader(OutputInterface $output, $namespace, $bundle)
     {
         $output->write('Checking that the bundle is autoloaded: ');
         if (!class_exists($namespace.'\\'.$bundle)) {
@@ -293,7 +270,7 @@ EOT
         }
     }
 
-    protected function updateRouting(DialogHelper $dialog, InputInterface $input, OutputInterface $output, $bundle, $format)
+    protected function updateRouting(DialogHelper $dialog, InputInterface $input, OutputInterface $output, $bundle)
     {
         $auto = true;
         if ($input->isInteractive()) {
@@ -303,13 +280,10 @@ EOT
         $output->write('Importing the bundle routing resource: ');
         $routing = new RoutingManipulator($this->getContainer()->getParameter('kernel.root_dir').'/config/routing.yml');
         try {
-            $ret = $auto ? $routing->addResource($bundle, $format) : false;
+            $ret = $auto ? $routing->addResource($bundle) : false;
             if (!$ret) {
-                if ('annotation' === $format) {
-                    $help = sprintf("        <comment>resource: \"@%s/Application/Controller/\"</comment>\n        <comment>type:     annotation</comment>\n", $bundle);
-                } else {
-                    $help = sprintf("        <comment>resource: \"@%s/Resources/config/routing.%s\"</comment>\n", $bundle, $format);
-                }
+
+                $help = sprintf("        <comment>resource: \"@%s/Application/Controller/\"</comment>\n        <comment>type:     annotation</comment>\n", $bundle);
                 $help .= "        <comment>prefix:   /</comment>\n";
 
                 return array(

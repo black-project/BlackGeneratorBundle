@@ -35,7 +35,7 @@ new commands are listed below:
 
    commands/generate_bundle
 
-.. _Download: http://github.com/sensio/BlackGeneratorBundle
+.. _Download: http://github.com/black-project/BlackGeneratorBundle
 
 Overriding Skeleton Templates
 -----------------------------

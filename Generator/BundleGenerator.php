@@ -57,20 +57,20 @@ class BundleGenerator extends Generator
         $this->renderFile('bundle/Extension.php.twig', $dir.'/Application/DependencyInjection/'.$basename.'Extension.php', $parameters);
         $this->renderFile('bundle/Configuration.php.twig', $dir.'/Application/DependencyInjection/Configuration.php', $parameters);
         $this->renderFile('bundle/DefaultController.php.twig', $dir.'/Application/Controller/DefaultController.php', $parameters);
-        $this->renderFile('bundle/DefaultControllerTest.php.twig', $dir.'/Tests/Controller/DefaultControllerTest.php', $parameters);
+        $this->renderFile('bundle/DefaultControllerTest.php.twig', $dir.'/Tests/Application/Controller/DefaultControllerTest.php', $parameters);
         $this->renderFile('bundle/index.html.twig.twig', $dir.'/Resources/views/Default/index.html.twig', $parameters);
 
         $this->renderFile('bundle/services.xml.twig', $dir.'/Resources/config/services.xml', $parameters);
 
         if ($structure) {
-            $this->renderFile('bundle/messages.fr.xlf', $dir.'/Resources/translations/messages.fr.xlf', $parameters);
-
             $this->filesystem->mkdir($dir.'/Resources/doc');
-            $this->filesystem->touch($dir.'/Resources/doc/index.rst');
+            $this->filesystem->touch($dir.'/Resources/doc/index.md');
             $this->filesystem->mkdir($dir.'/Resources/translations');
             $this->filesystem->mkdir($dir.'/Resources/public/css');
             $this->filesystem->mkdir($dir.'/Resources/public/images');
             $this->filesystem->mkdir($dir.'/Resources/public/js');
+
+            $this->renderFile('bundle/messages.fr.yml.twig', $dir.'/Resources/translations/messages.fr.yml', $parameters);
         }
     }
 }

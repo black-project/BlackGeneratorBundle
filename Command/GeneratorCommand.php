@@ -13,7 +13,7 @@ namespace Black\Bundle\GeneratorBundle\Command;
 
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Black\Bundle\GeneratorBundle\Generator\Generator;
+use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 use Sensio\Bundle\GeneratorBundle\Command\Helper\DialogHelper;
 
 /**
