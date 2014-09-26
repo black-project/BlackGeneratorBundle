@@ -46,7 +46,7 @@ class DoctrineEntityGenerator extends Generator
         }
 
         $class = new ClassMetadataInfo($entityClass);
-        $class->customRepositoryClassName = $entityClass.'OrmRepository';
+        $class->customRepositoryClassName = $bundle->getNamespace().'/Infrastructure/Persistence/'.$entity.'OrmRepository';
         $class->mapField(array('fieldName' => 'id', 'type' => 'integer', 'id' => true));
         $class->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
         foreach ($fields as $field) {
@@ -61,7 +61,6 @@ class DoctrineEntityGenerator extends Generator
         if (file_exists($mappingPath)) {
             throw new \RuntimeException(sprintf('Cannot generate entity when mapping "%s" already exists.', $mappingPath));
         }
-
         $mappingCode = $exporter->exportClassMetadata($class);
         $entityGenerator->setGenerateAnnotations(false);
         $entityCode = $entityGenerator->generateEntityClass($class);

@@ -14,10 +14,6 @@ namespace Black\Bundle\GeneratorBundle\Generator;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\ORM\Tools\EntityGenerator;
-use Doctrine\ORM\Tools\EntityRepositoryGenerator;
-use Doctrine\ORM\Tools\Export\ClassMetadataExporter;
 use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 
 /**
@@ -41,9 +37,10 @@ class DoctrineModelGenerator extends Generator
     {
         // configure the bundle (needed if the bundle does not contain any Model yet)
         $config = $this->registry->getManager(null)->getConfiguration();
+
         $config->setEntityNamespaces(array_merge(
-            array($bundle->getName() => $bundle->getNamespace().'\\Domain\\Model'),
-            $config->getEntityNamespaces()
+            array($config->getEntityNamespaces(), $bundle->getName() => $bundle->getNamespace().'\\Domain\\Model')
+
         ));
 
         $entityGenerator = new DoctrineEntityGenerator($this->filesystem, $this->registry);
