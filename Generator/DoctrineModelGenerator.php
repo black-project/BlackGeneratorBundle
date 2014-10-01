@@ -39,7 +39,7 @@ class DoctrineModelGenerator extends Generator
         $config = $this->registry->getManager(null)->getConfiguration();
 
         $config->setEntityNamespaces(array_merge(
-            array($config->getEntityNamespaces(), $bundle->getName() => $bundle->getNamespace().'\\Domain\\Model')
+            array($bundle->getName() => $bundle->getNamespace().'\\Domain\\Model\\', $config->getEntityNamespaces())
 
         ));
 

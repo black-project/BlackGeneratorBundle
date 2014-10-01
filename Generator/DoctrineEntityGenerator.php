@@ -46,7 +46,7 @@ class DoctrineEntityGenerator extends Generator
         }
 
         $class = new ClassMetadataInfo($entityClass);
-        $class->customRepositoryClassName = $bundle->getNamespace().'/Infrastructure/Persistence/'.$entity.'OrmRepository';
+        $class->customRepositoryClassName = $bundle->getNamespace().'\\Infrastructure\\Persistence\\'.$entity.'OrmRepository';
         $class->mapField(array('fieldName' => 'id', 'type' => 'integer', 'id' => true));
         $class->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
         foreach ($fields as $field) {
@@ -56,7 +56,7 @@ class DoctrineEntityGenerator extends Generator
         $entityGenerator = $this->getEntityGenerator();
         $cme = new ClassMetadataExporter();
         $exporter = $cme->getExporter('xml');
-        $mappingPath = $bundle->getPath().'/Resources/config/doctrine/'.str_replace('\\', '.', $entity).'.orm.xml';
+        $mappingPath = $bundle->getPath().'/Resources/config/doctrine/model/'.str_replace('\\', '.', $entity).'.orm.xml';
 
         if (file_exists($mappingPath)) {
             throw new \RuntimeException(sprintf('Cannot generate entity when mapping "%s" already exists.', $mappingPath));

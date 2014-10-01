@@ -64,7 +64,6 @@ class BundleGenerator extends Generator
         $this->renderFile('bundle/orm.xml.twig', $dir.'/Resources/config/orm.xml', $parameters);
         $this->renderFile('bundle/mongodb.xml.twig', $dir.'/Resources/config/mongodb.xml', $parameters);
 
-
         if ($structure) {
             $this->filesystem->mkdir($dir.'/Resources/doc');
             $this->filesystem->touch($dir.'/Resources/doc/index.md');
